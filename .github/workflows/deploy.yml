@@ -41,7 +41,7 @@ jobs:
         working-directory: ./
         run: |
           hexo generate
-
+      
       # - name: algolia
       #   working-directory: ./
       #   run: |
