@@ -1,0 +1,61 @@
+name: Hexo ShokaX Build and Deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: shokax-can
+        run: |
+          git clone https://github.com/theme-shoka-x/shokax-can --depth=1
+          cd shokax-can
+          npm install -g pnpm
+          pnpm install
+          pnpm install hexo-generator-sitemap
+      
+      - name: Copy Modules
+        run: cp -r shokax-can/node_modules node_modules
+      
+      - name: Install Hexo CLI
+        run: npm install -g hexo-cli
+
+      # - name: replace
+      #   working-directory: ./
+      #   run: |
+      #     cp replace/post.js node_modules/hexo-theme-shokax/source/js/_app/page/post.js
+          
+      - name: build
+        working-directory: ./
+        run: |
+          hexo generate
+
+      - name: algolia
+        working-directory: ./
+        run: |
+          export HEXO_ALGOLIA_INDEXING_KEY=${ { secrets.API_TOKEN_ALGOLIA_INDEXING_KEY }}
+          hexo algolia
+        #                                    ^ 去掉這個空格，因為不能正確渲染 2 個括號
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${ { secrets.API_GITHUB_TOKEN }}
+        #                     ^ 去掉這個空格，因為不能正確渲染 2 個括號
+        with:
+          source-directory: './public'
+          destination-github-username: 'asandy1023'
+          destination-repository-name: 'asandy1023.github.io'
+          user-email: "asandy1023@gmail.com"
+          target-branch: main
