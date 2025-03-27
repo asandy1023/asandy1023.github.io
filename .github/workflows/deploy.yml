@@ -45,7 +45,7 @@ jobs:
       - name: algolia
         working-directory: ./
         run: |
-          export HEXO_ALGOLIA_INDEXING_KEY=${ { secrets.API_TOKEN_ALGOLIA_INDEXING_KEY }}
+          # export HEXO_ALGOLIA_INDEXING_KEY=${ { secrets.API_TOKEN_ALGOLIA_INDEXING_KEY }}
           hexo algolia
         #                                    ^ 去掉這個空格，因為不能正確渲染 2 個括號
       - name: Pushes to another repository
