@@ -41,7 +41,7 @@ jobs:
         working-directory: ./
         run: |
           hexo generate
-      
+
       # - name: algolia
       #   working-directory: ./
       #   run: |
@@ -51,7 +51,7 @@ jobs:
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${ { secrets.API_GITHUB_TOKEN }}
+          API_TOKEN_GITHUB: ${{ secrets.API_GITHUB_TOKEN }}
         #                     ^ 去掉這個空格，因為不能正確渲染 2 個括號
         with:
           source-directory: './public'
